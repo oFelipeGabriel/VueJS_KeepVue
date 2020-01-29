@@ -28,29 +28,29 @@
       <v-spacer></v-spacer>
 
       <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
+        
         text
       >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
+        <span class="mr-2">Keep-Vue</span>
+        <v-icon>mdi-vuetify</v-icon>
       </v-btn>
     </v-app-bar>
 
-    <v-content>
-      <HelloWorld/>
+    <v-content class="px-3">
+      <ListaNotas/>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+//import HelloWorld from './components/HelloWorld';
+import ListaNotas from './components/ListaNotas';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    ListaNotas,
   },
 
   data: () => ({
@@ -58,3 +58,9 @@ export default {
   }),
 };
 </script>
+
+<style scoped>
+.px-3{
+  padding: 0 .3rem;
+}
+</style>
