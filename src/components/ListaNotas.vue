@@ -6,137 +6,35 @@
     <v-container fluid>
       <v-row dense>
         <v-col
-          v-for="card in cards"
+          v-for="(card,index) in cards"
           :key="card.title"
           cols="12"
           :md="card.flex"
         >
-          <v-card :color="card.color" shaped dark>
-              <v-card-title v-text="card.title"></v-card-title>
-              <v-card-text class="text--lighten">
-                <div >{{card.text}}</div>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-
-            <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                    <span v-on="on">
-                        <v-btn icon>
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                    </span>
-                </template>
-                <span>Editar</span>
-                </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                    <span v-on="on">
-                        <v-btn icon >
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </span>
-                </template>
-                <span>Apagar</span>
-                </v-tooltip>
-            </v-card-actions>
-          </v-card>
+          <CardNota 
+            :nota="card" 
+            :id="index"
+            @edita="editaNota"
+            @remover="remover"/>
         </v-col>
       </v-row>
       <v-row justify="center">
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
-      <template v-slot:activator="{ on }">
-          <v-fab-transition>
-            <v-btn
-            v-show="!hidden"
-            v-on="on"
-            color="cyan"
-            dark
-            absolute
-            bottom
-            right
-            fab
-            >
-            <v-icon>mdi-plus</v-icon>
-            </v-btn>
-        </v-fab-transition>
-      </template>
-      <v-card>
-        <v-toolbar dark color="primary">
-          <v-btn icon dark @click="dialog = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Nova Nota</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn dark text @click="salvar">Salvar</v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-form
-            ref="form"
-            v-model="valid"
-            lazy-validation
-            class="px-3"
-        >
-            <v-text-field
-            v-model="titulo"
-            :counter="50"
-            :rules="tituloRules"
-            label="Titulo"
-            required
-            ></v-text-field>
-        <v-row>
-            <v-col cols="10">
-            <v-textarea
-            solo
-            v-model="nota"
-            height="210"
-            name="input-7-4"
-            label="Nota"
-            ></v-textarea>
-            </v-col>
-            <v-col cols="2">
-            <v-color-picker v-model="color" hide-inputs></v-color-picker>
-            </v-col>
-        </v-row>
-
-        <v-row justify="end" class="px-3">
-            <v-btn
-            :disabled="!valid"
-            color="success"
-            class="mr-4"
-            @click="validate"
-            >
-            Validate
-            </v-btn>
-
-            <v-btn
-            color="error"
-            class="mr-4"
-            @click="reset"
-            >
-            Reset Form
-            </v-btn>
-
-            <v-btn
-            color="warning"
-            @click="resetValidation"
-            >
-            Reset Validation
-            </v-btn>
-        </v-row>
-        </v-form>
-      </v-card>
-    </v-dialog>
+    
   </v-row>
     </v-container>
-    
+    <Modal :dialog="dialog" @novo="getNota" @fecha="dialog=false" @abre="abreModal" :nota="nota" @remover="remover"/>
   </v-card>
 </template>
 
 <script>
+import Modal from './Modal';
+import CardNota from './CardNota';
 export default {
     name: 'ListaNotas',
+    components:{
+      Modal,
+      CardNota
+    },
     data(){
         return{
             dialog: false,
@@ -146,6 +44,7 @@ export default {
                 v => (v && v.length <= 10) || 'Titulo deve ter no máximo 50 caracteres',
             ],
             nota: '',
+            editar: false,
             color: '#000000',
             cards:[
                 {
@@ -170,27 +69,32 @@ export default {
         }
     },
     methods: {
-      validate () {
-        if (this.$refs.form.validate()) {
-          this.snackbar = true
+      abreModal(){
+        this.dialog = true
+        if(this.nota == ''){
+          this.nota = {text: '', title: '', color: '#1888c4'}
         }
       },
-      reset () {
-        this.$refs.form.reset()
-        this.color = '#000000'
-      },
-      resetValidation () {
-        this.$refs.form.resetValidation()
-      },
-      salvar(){
-          this.dialog = false;
-          let titulo = this.titulo;
-          let text = this.nota;
-          let cor = this.color;
-          let nota = {title: titulo, text: text, flex: '6', color: cor}
-          this.cards.push(nota)
-          this.reset()
-      }
+     getNota(nota){
+       if(this.editar){
+         this.cards[this.editar] = nota
+         this.editar = null
+       }else{
+         this.cards.push(nota);
+       }
+       
+       this.dialog = false
+
+     },
+     editaNota(id){
+       let nota = this.cards[id]
+       this.nota = nota
+       this.editar = id
+       this.dialog = true
+     },
+     remover(id){
+       this.cards.splice(id,1)
+     }
     },
 }
 </script>
