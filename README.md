@@ -1,4 +1,7 @@
 # keep
+## Simple PWA project with Vuetify
+
+### Live demo: https://keep-vue.herokuapp.com/
 
 ## Project setup
 ```
