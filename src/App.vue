@@ -43,8 +43,7 @@
 </template>
 
 <script>
-//import HelloWorld from './components/HelloWorld';
-import ListaNotas from './components/ListaNotas';
+import ListaNotas from './components/ListaNotas.vue'
 
 export default {
   name: 'App',
@@ -56,11 +55,5 @@ export default {
   data: () => ({
     //
   }),
-};
-</script>
-
-<style scoped>
-.px-3{
-  padding: 0 .3rem;
 }
-</style>
+</script>

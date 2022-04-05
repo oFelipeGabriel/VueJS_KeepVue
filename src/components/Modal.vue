@@ -1,5 +1,8 @@
+
 <template>
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+
+    <v-dialog v-model="open" v-on:input="emitOutput"
+      fullscreen >
       <template v-slot:activator="{ on }">
           <v-fab-transition>
             <v-btn
@@ -35,7 +38,8 @@
             class="px-3"
         >
             <v-text-field
-            v-model="nota.title"
+            :value="nota.title"
+            @input="setNotaTitle($event.target.value)"
             :counter="50"
             :rules="tituloRules"
             label="Titulo"
@@ -45,7 +49,8 @@
             <v-col cols="12">
             <v-textarea
             solo
-            v-model="nota.text"
+            :value="nota.text"
+            @input="setNotaValue($event.target.value)"
             height="210"
             name="input-7-4"
             label="Nota"
@@ -87,7 +92,7 @@
 
 <script>
 export default {
-    name: 'Modal',
+    name: 'ModalVue',
     props:['dialog', 'nota'],
     data(){
         return{
@@ -99,7 +104,8 @@ export default {
             color: '#1888c4',
             texto: '',
             valid: false,
-            hidden: false
+            hidden: false,
+            open: false
         }
         
     },
@@ -114,6 +120,9 @@ export default {
         if (this.$refs.form.validate()) {
           this.snackbar = true
         }
+      },
+      emitOutput() {
+        this.$emit('setDialogValue', this.dialog)
       },
       reset () {
         this.$refs.form.reset()
@@ -133,7 +142,27 @@ export default {
       },
       remover(id){
           this.$emit('remover', id)
+      },
+      setDialogValue(value){
+        this.$emit('setDialogValue', value)
+      },
+      setNotaTitle(value){
+        this.$emit('setNotaTitle', value)
+      },
+      setNotaValue(value){
+        this.$emit('setNotaValue', value)
       }
+
+    },
+    watch:{
+        dialog(value){
+          console.log('dialog', value)
+          this.open = value
+        }
+    },
+     created() {
+    // props are exposed on `this`
+      console.log('creaed', this.dialog)
     }
 }
 </script>

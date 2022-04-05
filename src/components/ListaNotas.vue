@@ -22,17 +22,28 @@
     
   </v-row>
     </v-container>
-    <Modal :dialog="dialog" @novo="getNota" @fecha="dialog=false" @abre="abreModal" :nota="nota" @remover="remover"/>
+    
+    <ModalVue 
+      :dialog="dialog" 
+      @novo="getNota" 
+      @fecha="dialog=false" 
+      @abre="abreModal" 
+      :nota="nota" 
+      @remover="remover"
+      @setNotaValue="(value)=>nota.text=value"
+      @setNotaTitle="(value)=>nota.title=value"
+      @setDialogValue="(value)=>dialog=value"
+    />
   </v-card>
 </template>
 
 <script>
-import Modal from './Modal';
+import ModalVue from './Modal';
 import CardNota from './CardNota';
 export default {
     name: 'ListaNotas',
     components:{
-      Modal,
+      ModalVue,
       CardNota
     },
     data(){
@@ -91,6 +102,7 @@ export default {
        this.nota = nota
        this.editar = id
        this.dialog = true
+       console.log({nota, dialog: this.dialog})
      },
      remover(id){
        this.cards.splice(id,1)
